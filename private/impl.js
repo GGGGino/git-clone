@@ -2,6 +2,10 @@ const {
     buildCloneCommand,
     buildCheckoutCommand
 } = require('./util');
+const {
+    CheckoutError,
+    CloneError
+} = require('./errors')
 
 const spawn = require('child_process').spawn;
 
@@ -34,7 +38,7 @@ module.exports = function clone(repo, targetPath, opts, onSuccess, onError) {
             	onSuccess();   
             }
         } else {
-            onError(new Error("'git clone' failed with status " + status));
+            onError(new CloneError("'git clone' failed with status " + status, status));
         }
     });
 
@@ -45,7 +49,7 @@ module.exports = function clone(repo, targetPath, opts, onSuccess, onError) {
             if (status == 0) {
                 onSuccess();
             } else {
-                onError(new Error("'git checkout' failed with status " + status));
+                onError(new CheckoutError("'git checkout' failed with status " + status, status));
             }
         });
     }
